@@ -1,4 +1,5 @@
 // NFL Stats Dashboard - Main Application
+// 2025-26 NFL Playoffs Season
 // Uses ESPN's public API endpoints
 
 const API_BASE = 'https://site.api.espn.com/apis';
@@ -6,38 +7,84 @@ const API_BASE = 'https://site.api.espn.com/apis';
 // API Endpoints
 const ENDPOINTS = {
     scoreboard: `${API_BASE}/site/v2/sports/football/nfl/scoreboard`,
-    standings: `${API_BASE}/v2/sports/football/nfl/standings`,
-    leaders: `${API_BASE}/site/v2/sports/football/nfl/leaders`
+    leaders: `${API_BASE}/site/v2/sports/football/nfl/leaders`,
+    news: `${API_BASE}/site/v2/sports/football/nfl/news`
 };
 
-// Chart instances
-let charts = {
-    passing: null,
-    rushing: null,
-    receiving: null
-};
+// ============================================
+// 2025-26 NFL FINAL STANDINGS DATA
+// ============================================
 
-// Chart colors
-const CHART_COLORS = [
-    '#013369', '#d50a0a', '#1a4a8a', '#ff6b6b', '#4ecdc4',
-    '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#74b9ff'
-];
+const NFL_STANDINGS_2025 = {
+    AFC: {
+        East: [
+            { team: 'New England Patriots', abbr: 'NE', wins: 14, losses: 3, ties: 0, divRecord: '5-1', playoff: 'division' },
+            { team: 'Buffalo Bills', abbr: 'BUF', wins: 12, losses: 5, ties: 0, divRecord: '4-2', playoff: 'wildcard' },
+            { team: 'Miami Dolphins', abbr: 'MIA', wins: 7, losses: 10, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'New York Jets', abbr: 'NYJ', wins: 3, losses: 14, ties: 0, divRecord: '0-6', playoff: null }
+        ],
+        North: [
+            { team: 'Pittsburgh Steelers', abbr: 'PIT', wins: 10, losses: 7, ties: 0, divRecord: '4-2', playoff: 'division' },
+            { team: 'Baltimore Ravens', abbr: 'BAL', wins: 8, losses: 9, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'Cincinnati Bengals', abbr: 'CIN', wins: 6, losses: 11, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'Cleveland Browns', abbr: 'CLE', wins: 5, losses: 12, ties: 0, divRecord: '2-4', playoff: null }
+        ],
+        South: [
+            { team: 'Jacksonville Jaguars', abbr: 'JAX', wins: 13, losses: 4, ties: 0, divRecord: '5-1', playoff: 'division' },
+            { team: 'Houston Texans', abbr: 'HOU', wins: 12, losses: 5, ties: 0, divRecord: '4-2', playoff: 'wildcard' },
+            { team: 'Indianapolis Colts', abbr: 'IND', wins: 8, losses: 9, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'Tennessee Titans', abbr: 'TEN', wins: 3, losses: 14, ties: 0, divRecord: '0-6', playoff: null }
+        ],
+        West: [
+            { team: 'Denver Broncos', abbr: 'DEN', wins: 14, losses: 3, ties: 0, divRecord: '5-1', playoff: 'division' },
+            { team: 'Los Angeles Chargers', abbr: 'LAC', wins: 11, losses: 6, ties: 0, divRecord: '4-2', playoff: 'wildcard' },
+            { team: 'Kansas City Chiefs', abbr: 'KC', wins: 6, losses: 11, ties: 0, divRecord: '1-5', playoff: null },
+            { team: 'Las Vegas Raiders', abbr: 'LV', wins: 3, losses: 14, ties: 0, divRecord: '2-4', playoff: null }
+        ]
+    },
+    NFC: {
+        East: [
+            { team: 'Philadelphia Eagles', abbr: 'PHI', wins: 11, losses: 6, ties: 0, divRecord: '4-2', playoff: 'division' },
+            { team: 'Dallas Cowboys', abbr: 'DAL', wins: 7, losses: 9, ties: 1, divRecord: '3-3', playoff: null },
+            { team: 'Washington Commanders', abbr: 'WAS', wins: 5, losses: 12, ties: 0, divRecord: '2-4', playoff: null },
+            { team: 'New York Giants', abbr: 'NYG', wins: 4, losses: 13, ties: 0, divRecord: '2-4', playoff: null }
+        ],
+        North: [
+            { team: 'Chicago Bears', abbr: 'CHI', wins: 11, losses: 6, ties: 0, divRecord: '5-1', playoff: 'division' },
+            { team: 'Green Bay Packers', abbr: 'GB', wins: 9, losses: 8, ties: 0, divRecord: '3-3', playoff: 'wildcard' },
+            { team: 'Minnesota Vikings', abbr: 'MIN', wins: 9, losses: 8, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'Detroit Lions', abbr: 'DET', wins: 8, losses: 9, ties: 0, divRecord: '3-3', playoff: null }
+        ],
+        South: [
+            { team: 'Carolina Panthers', abbr: 'CAR', wins: 8, losses: 9, ties: 0, divRecord: '3-3', playoff: 'division' },
+            { team: 'Tampa Bay Buccaneers', abbr: 'TB', wins: 8, losses: 9, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'Atlanta Falcons', abbr: 'ATL', wins: 8, losses: 9, ties: 0, divRecord: '3-3', playoff: null },
+            { team: 'New Orleans Saints', abbr: 'NO', wins: 7, losses: 10, ties: 0, divRecord: '3-3', playoff: null }
+        ],
+        West: [
+            { team: 'Seattle Seahawks', abbr: 'SEA', wins: 14, losses: 3, ties: 0, divRecord: '6-0', playoff: 'division' },
+            { team: 'Los Angeles Rams', abbr: 'LAR', wins: 12, losses: 5, ties: 0, divRecord: '4-2', playoff: 'wildcard' },
+            { team: 'San Francisco 49ers', abbr: 'SF', wins: 12, losses: 5, ties: 0, divRecord: '3-3', playoff: 'wildcard' },
+            { team: 'Arizona Cardinals', abbr: 'ARI', wins: 5, losses: 12, ties: 0, divRecord: '1-5', playoff: null }
+        ]
+    }
+};
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
-    setupTabListeners();
 });
 
-async function initDashboard() {
+function initDashboard() {
     updateLastUpdated();
 
-    // Fetch all data in parallel
-    await Promise.all([
-        fetchAndDisplayGames(),
-        fetchAndDisplayStandings(),
-        fetchAndDisplayLeaders()
-    ]);
+    // Render hardcoded standings (closed by default)
+    renderStandings();
+
+    // Fetch live data
+    fetchAndDisplayGames();
+    fetchAndDisplayTopPlayers();
+    fetchAndDisplayNews();
 }
 
 function updateLastUpdated() {
@@ -47,7 +94,84 @@ function updateLastUpdated() {
 }
 
 // ============================================
-// RECENT GAMES
+// STANDINGS (Hardcoded 2025-26 Data)
+// Accordions start CLOSED by default
+// ============================================
+
+function renderStandings() {
+    renderConferenceStandings('afcStandings', NFL_STANDINGS_2025.AFC);
+    renderConferenceStandings('nfcStandings', NFL_STANDINGS_2025.NFC);
+}
+
+function renderConferenceStandings(containerId, conferenceData) {
+    const container = document.getElementById(containerId);
+
+    const divisionsHTML = Object.entries(conferenceData).map(([divisionName, teams]) => {
+        return createDivisionAccordion(divisionName, teams);
+    }).join('');
+
+    container.innerHTML = divisionsHTML;
+}
+
+function createDivisionAccordion(divisionName, teams) {
+    const teamsHTML = teams.map((team, index) => {
+        const record = team.ties > 0
+            ? `${team.wins}-${team.losses}-${team.ties}`
+            : `${team.wins}-${team.losses}`;
+
+        let playoffBadge = '';
+        if (team.playoff === 'division') {
+            playoffBadge = '<span class="playoff-indicator division-winner">DIV</span>';
+        } else if (team.playoff === 'wildcard') {
+            playoffBadge = '<span class="playoff-indicator wildcard">WC</span>';
+        }
+
+        return `
+            <tr>
+                <td>${index + 1}</td>
+                <td>
+                    <span class="team-name">${team.abbr}</span>
+                    ${playoffBadge}
+                </td>
+                <td class="record-cell">${record}</td>
+                <td class="div-record">${team.divRecord}</td>
+            </tr>
+        `;
+    }).join('');
+
+    // Note: No 'open' class = closed by default
+    return `
+        <div class="division-item">
+            <div class="division-header" onclick="toggleDivision(this)">
+                <span>${divisionName}</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="division-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Team</th>
+                            <th>Record</th>
+                            <th>Div</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${teamsHTML}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+function toggleDivision(header) {
+    const divisionItem = header.parentElement;
+    divisionItem.classList.toggle('open');
+}
+
+// ============================================
+// RECENT GAMES (Playoffs)
 // ============================================
 
 async function fetchAndDisplayGames() {
@@ -58,7 +182,7 @@ async function fetchAndDisplayGames() {
         const data = await response.json();
 
         if (!data.events || data.events.length === 0) {
-            container.innerHTML = '<p class="error">No games available</p>';
+            container.innerHTML = '<p class="error">No playoff games scheduled - check back soon</p>';
             return;
         }
 
@@ -105,256 +229,134 @@ function createGameCard(game) {
 }
 
 // ============================================
-// STANDINGS
+// TOP 3 PLAYERS OF THE WEEK
 // ============================================
 
-async function fetchAndDisplayStandings() {
-    const afcContainer = document.getElementById('afcStandings');
-    const nfcContainer = document.getElementById('nfcStandings');
+async function fetchAndDisplayTopPlayers() {
+    const container = document.getElementById('topPlayersContainer');
 
-    try {
-        const response = await fetch(ENDPOINTS.standings);
-        const data = await response.json();
-
-        if (!data.children || data.children.length === 0) {
-            afcContainer.innerHTML = '<p class="error">No standings available</p>';
-            nfcContainer.innerHTML = '<p class="error">No standings available</p>';
-            return;
-        }
-
-        // ESPN returns conferences, each with divisions
-        data.children.forEach(conference => {
-            const isAFC = conference.name.includes('AFC') || conference.abbreviation === 'AFC';
-            const container = isAFC ? afcContainer : nfcContainer;
-            container.innerHTML = renderConferenceStandings(conference);
-        });
-    } catch (error) {
-        console.error('Error fetching standings:', error);
-        afcContainer.innerHTML = '<p class="error">Failed to load standings</p>';
-        nfcContainer.innerHTML = '<p class="error">Failed to load standings</p>';
-    }
-}
-
-function renderConferenceStandings(conference) {
-    if (!conference.children) {
-        return '<p class="error">No division data available</p>';
-    }
-
-    return conference.children.map(division => `
-        <div class="division">
-            <h4>${division.name.replace('AFC ', '').replace('NFC ', '')}</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Team</th>
-                        <th>W</th>
-                        <th>L</th>
-                        <th>T</th>
-                        <th>PCT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${division.standings.entries.map(entry => renderStandingsRow(entry)).join('')}
-                </tbody>
-            </table>
-        </div>
-    `).join('');
-}
-
-function renderStandingsRow(entry) {
-    const team = entry.team;
-    const stats = {};
-
-    // Parse stats from the entry
-    entry.stats.forEach(stat => {
-        stats[stat.name] = stat.value;
-    });
-
-    const wins = stats.wins || 0;
-    const losses = stats.losses || 0;
-    const ties = stats.ties || 0;
-    const pct = stats.winPercent ? stats.winPercent.toFixed(3) : '.000';
-
-    return `
-        <tr>
-            <td>
-                <div class="team-cell">
-                    <img class="team-logo" src="${team.logos?.[0]?.href || ''}" alt="${team.displayName}" onerror="this.style.display='none'">
-                    <span>${team.abbreviation}</span>
-                </div>
-            </td>
-            <td>${wins}</td>
-            <td>${losses}</td>
-            <td>${ties}</td>
-            <td>${pct}</td>
-        </tr>
-    `;
-}
-
-// ============================================
-// PLAYER LEADERS
-// ============================================
-
-async function fetchAndDisplayLeaders() {
     try {
         const response = await fetch(ENDPOINTS.leaders);
         const data = await response.json();
 
         if (!data.leaders || data.leaders.length === 0) {
-            displayLeadersError();
+            container.innerHTML = '<p class="error">No player stats available</p>';
             return;
         }
 
-        // Find the relevant leader categories
-        const passingData = findLeaderCategory(data.leaders, 'passingYards');
-        const rushingData = findLeaderCategory(data.leaders, 'rushingYards');
-        const receivingData = findLeaderCategory(data.leaders, 'receivingYards');
+        // Get top player from each category
+        const passingLeader = getTopPlayer(data.leaders, 'passingYards', 'Passing');
+        const rushingLeader = getTopPlayer(data.leaders, 'rushingYards', 'Rushing');
+        const receivingLeader = getTopPlayer(data.leaders, 'receivingYards', 'Receiving');
 
-        // Update tables
-        updateLeadersTable('passingLeaders', passingData);
-        updateLeadersTable('rushingLeaders', rushingData);
-        updateLeadersTable('receivingLeaders', receivingData);
+        const players = [passingLeader, rushingLeader, receivingLeader].filter(p => p !== null);
 
-        // Create charts
-        createLeaderChart('passingCanvas', 'passing', passingData, 'Passing Yards');
-        createLeaderChart('rushingCanvas', 'rushing', rushingData, 'Rushing Yards');
-        createLeaderChart('receivingCanvas', 'receiving', receivingData, 'Receiving Yards');
+        if (players.length === 0) {
+            container.innerHTML = '<p class="error">No player stats available</p>';
+            return;
+        }
+
+        container.innerHTML = players.map(player => createPlayerCard(player)).join('');
 
     } catch (error) {
-        console.error('Error fetching leaders:', error);
-        displayLeadersError();
+        console.error('Error fetching player stats:', error);
+        container.innerHTML = '<p class="error">Failed to load player stats</p>';
     }
 }
 
-function findLeaderCategory(leaders, statName) {
-    const category = leaders.find(l =>
+function getTopPlayer(leaders, statName, category) {
+    const categoryData = leaders.find(l =>
         l.name === statName ||
         l.displayName?.toLowerCase().includes(statName.toLowerCase().replace('yards', ''))
     );
 
-    if (!category || !category.leaders) {
-        return [];
+    if (!categoryData || !categoryData.leaders || categoryData.leaders.length === 0) {
+        return null;
     }
 
-    return category.leaders.slice(0, 10).map(leader => ({
-        name: leader.athlete.displayName,
-        team: leader.athlete.team?.abbreviation || 'N/A',
-        value: parseFloat(leader.value) || 0,
-        displayValue: leader.displayValue || leader.value
-    }));
+    const leader = categoryData.leaders[0];
+    const athlete = leader.athlete;
+
+    return {
+        name: athlete.displayName,
+        team: athlete.team?.abbreviation || 'N/A',
+        teamName: athlete.team?.displayName || '',
+        headshot: athlete.headshot?.href || `https://a.espncdn.com/i/headshots/nfl/players/full/${athlete.id}.png`,
+        category: category,
+        stat: leader.displayValue || leader.value,
+        statLabel: `${category} Yards`
+    };
 }
 
-function updateLeadersTable(tableId, data) {
-    const table = document.getElementById(tableId);
-    const tbody = table.querySelector('tbody');
+function createPlayerCard(player) {
+    const categoryColors = {
+        'Passing': '#013369',
+        'Rushing': '#d50a0a',
+        'Receiving': '#1a4a8a'
+    };
 
-    if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="error">No data available</td></tr>';
-        return;
-    }
+    const color = categoryColors[player.category] || '#013369';
 
-    tbody.innerHTML = data.map((player, index) => `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${player.name}</td>
-            <td>${player.team}</td>
-            <td>${player.displayValue}</td>
-        </tr>
-    `).join('');
+    return `
+        <div class="player-card">
+            <div class="player-category" style="background: ${color}">${player.category} Leader</div>
+            <div class="player-photo">
+                <img src="${player.headshot}" alt="${player.name}" onerror="this.src='https://a.espncdn.com/combiner/i?img=/i/headshots/nophoto.png&w=200&h=146'">
+            </div>
+            <div class="player-info">
+                <h3 class="player-name">${player.name}</h3>
+                <p class="player-team">${player.team}</p>
+                <div class="player-stat">
+                    <span class="stat-value">${player.stat}</span>
+                    <span class="stat-label">${player.statLabel}</span>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-function createLeaderChart(canvasId, chartKey, data, label) {
-    const canvas = document.getElementById(canvasId);
-    const ctx = canvas.getContext('2d');
+// ============================================
+// NFL NEWS SECTION
+// ============================================
 
-    // Destroy existing chart if it exists
-    if (charts[chartKey]) {
-        charts[chartKey].destroy();
-    }
+async function fetchAndDisplayNews() {
+    const container = document.getElementById('newsContainer');
 
-    if (!data || data.length === 0) {
-        return;
-    }
+    try {
+        const response = await fetch(ENDPOINTS.news);
+        const data = await response.json();
 
-    charts[chartKey] = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.map(p => p.name.split(' ').pop()), // Last name only for space
-            datasets: [{
-                label: label,
-                data: data.map(p => p.value),
-                backgroundColor: CHART_COLORS,
-                borderColor: CHART_COLORS.map(c => c),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        title: (items) => data[items[0].dataIndex].name,
-                        label: (item) => `${label}: ${item.raw.toLocaleString()}`
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: (value) => value.toLocaleString()
-                    }
-                },
-                x: {
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                }
-            }
+        if (!data.articles || data.articles.length === 0) {
+            container.innerHTML = '<p class="error">No news available</p>';
+            return;
         }
-    });
+
+        // Get top 3 articles
+        const articles = data.articles.slice(0, 3);
+        container.innerHTML = articles.map(article => createNewsCard(article)).join('');
+
+    } catch (error) {
+        console.error('Error fetching news:', error);
+        container.innerHTML = '<p class="error">Failed to load news</p>';
+    }
 }
 
-function displayLeadersError() {
-    ['passingLeaders', 'rushingLeaders', 'receivingLeaders'].forEach(id => {
-        const tbody = document.getElementById(id).querySelector('tbody');
-        tbody.innerHTML = '<tr><td colspan="4" class="error">Failed to load data</td></tr>';
-    });
+function createNewsCard(article) {
+    const image = article.images?.[0]?.url || 'https://a.espncdn.com/combiner/i?img=/i/espn/misc_logos/500/nfl.png&w=200';
+    const description = article.description || article.headline || '';
+    const truncatedDesc = description.length > 120 ? description.substring(0, 120) + '...' : description;
+    const link = article.links?.web?.href || article.links?.api?.news?.href || '#';
+
+    return `
+        <a href="${link}" target="_blank" rel="noopener" class="news-card">
+            <div class="news-image">
+                <img src="${image}" alt="${article.headline}" onerror="this.src='https://a.espncdn.com/combiner/i?img=/i/espn/misc_logos/500/nfl.png&w=200'">
+            </div>
+            <div class="news-content">
+                <h3 class="news-headline">${article.headline}</h3>
+                <p class="news-excerpt">${truncatedDesc}</p>
+                <span class="news-link">Read More →</span>
+            </div>
+        </a>
+    `;
 }
-
-// ============================================
-// TAB FUNCTIONALITY
-// ============================================
-
-function setupTabListeners() {
-    const tabs = document.querySelectorAll('.tab-btn');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Update active tab
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            // Show corresponding chart
-            const tabName = tab.dataset.tab;
-            document.querySelectorAll('.chart-wrapper').forEach(wrapper => {
-                wrapper.classList.remove('active');
-            });
-            document.getElementById(`${tabName}Chart`).classList.add('active');
-        });
-    });
-}
-
-// ============================================
-// AUTO REFRESH (optional - every 5 minutes)
-// ============================================
-
-// Uncomment to enable auto-refresh
-// setInterval(() => {
-//     initDashboard();
-// }, 5 * 60 * 1000);

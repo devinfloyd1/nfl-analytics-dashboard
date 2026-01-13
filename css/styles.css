@@ -148,7 +148,7 @@ main {
 /* Standings */
 .standings-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 2rem;
 }
 
@@ -156,130 +156,275 @@ main {
     color: var(--primary-color);
     margin-bottom: 1rem;
     text-align: center;
+    font-size: 1.3rem;
 }
 
-.division {
-    margin-bottom: 1.5rem;
+.divisions-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.division h4 {
+/* Division Accordion */
+.division-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.division-header {
     background: var(--primary-color);
     color: white;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    border-radius: 4px 4px 0 0;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s ease;
 }
 
-.standings-table table {
+.division-header:hover {
+    background: #01468a;
+}
+
+.division-header .arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.division-item.open .division-header .arrow {
+    transform: rotate(180deg);
+}
+
+.division-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background: white;
+}
+
+.division-item.open .division-content {
+    max-height: 500px;
+}
+
+.division-content table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.standings-table th,
-.standings-table td {
-    padding: 0.5rem;
+.division-content th,
+.division-content td {
+    padding: 0.6rem 0.5rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
 
-.standings-table th {
+.division-content th {
     background: var(--bg-color);
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    color: var(--text-light);
 }
 
-.standings-table td {
+.division-content td {
     font-size: 0.9rem;
 }
 
-.standings-table .team-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+.division-content tr:last-child td {
+    border-bottom: none;
 }
 
-.standings-table .team-logo {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
+.division-content tr:hover {
+    background: #f8f9fa;
 }
 
-/* Player Stats */
-.stats-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-}
-
-.tab-btn {
-    padding: 0.75rem 1.5rem;
-    border: 2px solid var(--primary-color);
-    background: white;
-    color: var(--primary-color);
-    border-radius: 25px;
-    cursor: pointer;
+.team-name {
     font-weight: 500;
-    transition: all 0.3s ease;
 }
 
-.tab-btn:hover {
-    background: var(--primary-color);
+.playoff-indicator {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    margin-left: 0.3rem;
+    font-weight: bold;
+}
+
+.playoff-indicator.division-winner {
+    background: #28a745;
     color: white;
 }
 
-.tab-btn.active {
-    background: var(--primary-color);
+.playoff-indicator.wildcard {
+    background: #17a2b8;
     color: white;
 }
 
-.charts-container {
-    position: relative;
-    height: 400px;
+.record-cell {
+    font-weight: 600;
+    color: var(--primary-color);
 }
 
-.chart-wrapper {
-    display: none;
-    height: 100%;
+.div-record {
+    font-size: 0.85rem;
+    color: var(--text-light);
 }
 
-.chart-wrapper.active {
-    display: block;
-}
+/* ============================================
+   TOP PLAYERS OF THE WEEK
+   ============================================ */
 
-/* Leaders Table */
-.leaders-grid {
+.players-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
 }
 
-.leader-category h3 {
-    color: var(--primary-color);
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
-}
-
-.leader-category table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-}
-
-.leader-category th {
+.player-card {
     background: var(--bg-color);
-    padding: 0.5rem;
-    text-align: left;
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.player-category {
+    color: white;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.player-photo {
+    background: white;
+    padding: 1rem;
+}
+
+.player-photo img {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.player-info {
+    padding: 1rem;
+    background: white;
+}
+
+.player-name {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+}
+
+.player-team {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.player-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+}
+
+/* ============================================
+   NEWS SECTION
+   ============================================ */
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.news-card {
+    background: var(--bg-color);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.news-image {
+    height: 160px;
+    overflow: hidden;
+}
+
+.news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover .news-image img {
+    transform: scale(1.05);
+}
+
+.news-content {
+    padding: 1rem;
+    background: white;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-headline {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.news-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    flex-grow: 1;
+    margin-bottom: 0.75rem;
+}
+
+.news-link {
+    font-size: 0.85rem;
+    color: var(--primary-color);
     font-weight: 600;
 }
 
-.leader-category td {
-    padding: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.leader-category tr:hover {
-    background: var(--bg-color);
+.news-card:hover .news-link {
+    color: var(--secondary-color);
 }
 
 /* Footer */
@@ -297,7 +442,17 @@ footer {
     padding: 1rem;
 }
 
-/* Responsive Design */
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 992px) {
+    .players-grid,
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     header h1 {
         font-size: 1.8rem;
@@ -315,17 +470,14 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .charts-container {
-        height: 300px;
+    .players-grid,
+    .news-grid {
+        grid-template-columns: 1fr;
     }
 
-    .stats-tabs {
-        justify-content: center;
-    }
-
-    .tab-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+    .player-photo img {
+        width: 100px;
+        height: 75px;
     }
 }
 
@@ -339,6 +491,8 @@ footer {
     animation: fadeIn 0.5s ease-out;
 }
 
-.game-card {
+.game-card,
+.player-card,
+.news-card {
     animation: fadeIn 0.3s ease-out;
 }
