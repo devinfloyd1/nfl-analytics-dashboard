@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFL Stats Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>NFL Stats Dashboard</h1>
+        <p class="subtitle">Current Season Statistics</p>
+        <p class="last-updated" id="lastUpdated"></p>
+    </header>
+
+    <main>
+        <!-- Recent Games Section -->
+        <section class="card recent-games">
+            <h2>Recent Games</h2>
+            <div id="gamesContainer" class="games-grid">
+                <div class="loading">Loading games...</div>
+            </div>
+        </section>
+
+        <!-- Standings Section -->
+        <section class="card standings">
+            <h2>Team Standings</h2>
+            <div class="standings-container">
+                <div class="conference">
+                    <h3>AFC</h3>
+                    <div id="afcStandings" class="standings-table">
+                        <div class="loading">Loading standings...</div>
+                    </div>
+                </div>
+                <div class="conference">
+                    <h3>NFC</h3>
+                    <div id="nfcStandings" class="standings-table">
+                        <div class="loading">Loading standings...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Player Stats Section -->
+        <section class="card player-stats">
+            <h2>Top 10 Players</h2>
+            <div class="stats-tabs">
+                <button class="tab-btn active" data-tab="passing">Passing Yards</button>
+                <button class="tab-btn" data-tab="rushing">Rushing Yards</button>
+                <button class="tab-btn" data-tab="receiving">Receiving Yards</button>
+            </div>
+            <div class="charts-container">
+                <div id="passingChart" class="chart-wrapper active">
+                    <canvas id="passingCanvas"></canvas>
+                </div>
+                <div id="rushingChart" class="chart-wrapper">
+                    <canvas id="rushingCanvas"></canvas>
+                </div>
+                <div id="receivingChart" class="chart-wrapper">
+                    <canvas id="receivingCanvas"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Player Leaders Table -->
+        <section class="card leaders-table">
+            <h2>Statistical Leaders</h2>
+            <div class="leaders-grid">
+                <div class="leader-category">
+                    <h3>Passing Leaders</h3>
+                    <table id="passingLeaders">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Team</th>
+                                <th>Yards</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="leader-category">
+                    <h3>Rushing Leaders</h3>
+                    <table id="rushingLeaders">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Team</th>
+                                <th>Yards</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="leader-category">
+                    <h3>Receiving Leaders</h3>
+                    <table id="receivingLeaders">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Team</th>
+                                <th>Yards</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="4" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Data provided by ESPN API | Built for GitHub Pages</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
