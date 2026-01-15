@@ -331,8 +331,8 @@ async function fetchAndDisplayNews() {
             return;
         }
 
-        // Get top 3 articles
-        const articles = data.articles.slice(0, 3);
+        // Get top articles for ticker (increased to 8 for horizontal scroll)
+        const articles = data.articles.slice(0, 8);
         container.innerHTML = articles.map(article => createNewsCard(article)).join('');
 
     } catch (error) {
@@ -344,7 +344,7 @@ async function fetchAndDisplayNews() {
 function createNewsCard(article) {
     const image = article.images?.[0]?.url || 'https://a.espncdn.com/combiner/i?img=/i/espn/misc_logos/500/nfl.png&w=200';
     const description = article.description || article.headline || '';
-    const truncatedDesc = description.length > 120 ? description.substring(0, 120) + '...' : description;
+    const truncatedDesc = description.length > 100 ? description.substring(0, 100) + '...' : description;
     const link = article.links?.web?.href || article.links?.api?.news?.href || '#';
 
     return `
